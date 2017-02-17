@@ -1,0 +1,11 @@
+<% include _header %>
+<body>
+  <h1>Page 2</h1>
+  <% guys.forEach(function(guy) { %>
+    <ul>
+      <li><%= guy.first_name %></li>
+      <li><%= guy.last_name %></li>
+    </ul>
+  <% }) %>
+</body>
+</html>
