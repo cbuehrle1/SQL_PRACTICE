@@ -14,12 +14,12 @@ module.exports = function() {
   });
 
   passport.serializeUser(function(user, done) {
-    console.log(user)
+
     done(null, user.user_id);
   });
 
   passport.deserializeUser(function(id, done) {
-    console.log(id);
+
     connection.query("select * from users where user_id = "+id,function(err,rows){
 			done(err, rows[0]);
 		});
@@ -46,7 +46,7 @@ module.exports = function() {
         }
 
         if (rows.length) {
-          console.log("flash stored")
+
           return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
 
         }
@@ -62,12 +62,14 @@ module.exports = function() {
            newUserMysql.password = passwordToSave;
 
            var insertQuery = "INSERT INTO users ( username, password ) values ('" + username +"','"+ passwordToSave +"')";
-             console.log(insertQuery);
-           connection.query(insertQuery,function(err,rows){
-             console.log(rows.insertId)
-           newUserMysql.id = rows.insertId;
 
-           return done(null, newUserMysql);
+           console.log(insertQuery);
+
+           connection.query(insertQuery,function(err,rows){
+
+             newUserMysql.id = rows.insertId;
+
+             return done(null, newUserMysql);
 
           });
         }

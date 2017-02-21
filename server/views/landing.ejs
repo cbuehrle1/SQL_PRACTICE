@@ -1,5 +1,9 @@
 <% include _header %>
 <body>
   <h1>successfully logged in</h1>
+  <% if (currentUser) { %>
+    <h1>Welcome <%= currentUser.username %></h1>
+  <% } %>
+  <a href="/logout">Log Out</a>
 </body>
 </html>

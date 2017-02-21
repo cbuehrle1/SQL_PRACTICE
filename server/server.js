@@ -73,6 +73,7 @@ app.get("/login", function(req, res) {
 });
 
 app.get("/landing", ensureAuthenticated, function(req, res) {
+  console.log(req.user);
   res.render("landing");
 })
 
@@ -84,7 +85,12 @@ app.post("/signup", passport.authenticate("local-signup", {
 app.post("/login", passport.authenticate("local-login", {
   successRedirect: "/landing",
   failureRedirect: "/login"
-}))
+}));
+
+app.get("/logout", function(req, res) {
+  req.logout();
+  res.redirect("/");
+});
 
 app.listen(5000, function() {
   console.log('listening on port 5000.');
