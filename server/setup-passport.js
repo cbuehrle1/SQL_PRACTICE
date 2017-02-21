@@ -14,17 +14,19 @@ module.exports = function() {
   });
 
   passport.serializeUser(function(user, done) {
-    done(null, user.id);
+    console.log(user)
+    done(null, user.user_id);
   });
 
   passport.deserializeUser(function(id, done) {
+    console.log(id);
     connection.query("select * from users where user_id = "+id,function(err,rows){
 			done(err, rows[0]);
 		});
   });
 
-  var checkPassword = function(guess, done) {
-  bcrypt.compare(guess, this.password, function(err, isMatch){
+  var checkPassword = function(guess, storedPassword, done) {
+  bcrypt.compare(guess, storedPassword, function(err, isMatch){
     done(err, isMatch);
     });
   };
@@ -75,6 +77,7 @@ module.exports = function() {
    },
    function(req, username, password, done) { // callback with email and password from our form
 
+
     connection.query("SELECT * FROM `users` WHERE `username` = '" + username + "'",function(err,rows){
        if (err) {
          return done(err);
@@ -84,7 +87,7 @@ module.exports = function() {
          return done(null, false, req.flash('loginMessage', 'No user found.')); // req.flash is the way to set flashdata using connect-flash
        }
 
-       checkPassword(password, function(err, isMatch) {
+       checkPassword(password, rows[0].password, function(err, isMatch) {
 
          if (err) { return done(err); }
           if (isMatch) {

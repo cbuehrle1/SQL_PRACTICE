@@ -72,10 +72,19 @@ app.get("/login", function(req, res) {
   res.render("login");
 });
 
+app.get("/landing", function(req, res) {
+  res.render("landing");
+})
+
 app.post("/signup", passport.authenticate("local-signup", {
   successRedirect: "/login",
   failureRedirect: "/"
 }));
+
+app.post("/login", passport.authenticate("local-login", {
+  successRedirect: "/landing",
+  failureRedirect: "/login"
+}))
 
 app.listen(5000, function() {
   console.log('listening on port 5000.');

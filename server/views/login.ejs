@@ -1,5 +1,13 @@
 <% include _header %>
 <body>
-  <div>YOU POSTED SUCCESS!</div>
+  <div class="container">
+    <h1 class="ejs-logging-h1">Login</h1>
+
+    <form class="ejs-form" action="/login" method="post">
+      <input name="username" type="text" placeholder="Email" required autofocus>
+      <input name="password" type="password" placeholder="Password" required>
+      <input class="input-button" type="submit" value="Login" >
+    </form>
+  </div>
 </body>
 </html>
