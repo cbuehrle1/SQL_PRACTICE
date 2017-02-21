@@ -8,6 +8,9 @@
       <input name="password" type="password" placeholder="Password" required>
       <input class="input-button" type="submit" value="Login" >
     </form>
+    <% if (message !== undefined) { %>
+      <p><%= message %></p>
+    <% } %>
   </div>
 </body>
 </html>

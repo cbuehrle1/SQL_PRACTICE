@@ -31,7 +31,13 @@ module.exports = function() {
     });
   };
 
-  passport.use('local-signup', new LocalStrategy(function(username, password, done) {
+  passport.use('local-signup', new LocalStrategy({
+
+       username: 'username',
+       password: 'password',
+       passReqToCallback : true
+
+      }, function(req, username, password, done) {
 
        connection.query("select * from users where username = '"+username+"'",function(err,rows) {
 
@@ -40,7 +46,7 @@ module.exports = function() {
         }
 
         if (rows.length) {
-
+          console.log("flash stored")
           return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
 
         }
@@ -53,7 +59,7 @@ module.exports = function() {
            var passwordToSave = bcrypt.hashSync(password, salt)
 
            newUserMysql.username = username;
-           newUserMysql.password = passwordToSave; // use the generateHash function in our user model
+           newUserMysql.password = passwordToSave;
 
            var insertQuery = "INSERT INTO users ( username, password ) values ('" + username +"','"+ passwordToSave +"')";
              console.log(insertQuery);
@@ -70,13 +76,12 @@ module.exports = function() {
   }));
 
   passport.use('local-login', new LocalStrategy({
-       // by default, local strategy uses username and password, we will override with email
+
        username: 'username',
        password: 'password',
-       passReqToCallback : true // allows us to pass back the entire request to the callback
+       passReqToCallback : true
    },
-   function(req, username, password, done) { // callback with email and password from our form
-
+   function(req, username, password, done) {
 
     connection.query("SELECT * FROM `users` WHERE `username` = '" + username + "'",function(err,rows){
        if (err) {
