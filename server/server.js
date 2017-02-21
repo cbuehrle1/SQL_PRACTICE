@@ -5,6 +5,7 @@ var path = require("path");
 var session = require("express-session");
 var startPassport = require('./setup-passport')
 var passport = require("passport");
+var flash = require("connect-flash");
 var app = express();
 
 var connection = mysql.createConnection({
@@ -21,6 +22,7 @@ app.set('views', path.join(__dirname, '/views'));
 
 app.use(bodyParser.urlencoded({ extended: false}));
 app.use(bodyParser.json());
+app.use(flash());
 
 connection.connect(function(err) {
   if (!err) {
@@ -74,23 +76,24 @@ app.get("/", function(req, res) {
 
 });
 
-app.get("/page2", function(req, res) {
+app.get("/signup", function(req, res) {
+  res.render("signup");
+});
 
-  connection.query("SELECT * from guy", function(err, rows, fields) {
+app.get("/login", function(req, res) {
+  res.render("login");
+});
 
-  if (!err) {
+app.post("/signup", function(req, res) {
 
-    var output = rows;
-    res.render("page2", { guys: output })
-  }
-  else {
-    console.log(err);
-  }
+  console.log(req.body, "/signup");
 
+  passport.authenticate("local-signup", {
+  successRedirect: "/login",
+  failureRedirect: "/"
   });
 
 });
-
 
 app.listen(5000, function() {
   console.log('listening on port 5000.');
