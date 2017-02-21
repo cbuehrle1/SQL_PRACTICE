@@ -6,6 +6,13 @@ var bcrypt = require("bcrypt");
 
 module.exports = function() {
 
+  var connection = mysql.createConnection({
+    host     : 'localhost',
+    user     : 'root',
+    password : 'Dahc',
+    database : 'test1'
+  });
+
   passport.serializeUser(function(user, done) {
     done(null, user.id);
   });
@@ -24,9 +31,7 @@ module.exports = function() {
 
   passport.use('local-signup', new LocalStrategy(function(username, password, done) {
 
-      console.log("inside LocalStrategy", username, password)
-
-       connection.query("select * from users where username = '"+email+"'",function(err,rows) {
+       connection.query("select * from users where username = '"+username+"'",function(err,rows) {
 
         if (err) {
           return done(err);
@@ -45,12 +50,13 @@ module.exports = function() {
            var salt = bcrypt.genSaltSync(10);
            var passwordToSave = bcrypt.hashSync(password, salt)
 
-           newUserMysql.email = email;
+           newUserMysql.username = username;
            newUserMysql.password = passwordToSave; // use the generateHash function in our user model
 
-           var insertQuery = "INSERT INTO users ( username, password ) values ('" + username +"','"+ password +"')";
+           var insertQuery = "INSERT INTO users ( username, password ) values ('" + username +"','"+ passwordToSave +"')";
              console.log(insertQuery);
            connection.query(insertQuery,function(err,rows){
+             console.log(rows.insertId)
            newUserMysql.id = rows.insertId;
 
            return done(null, newUserMysql);

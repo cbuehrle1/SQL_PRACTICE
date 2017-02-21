@@ -3,7 +3,7 @@ var mysql = require('mysql');
 var bodyParser = require('body-parser');
 var path = require("path");
 var session = require("express-session");
-var startPassport = require('./setup-passport')
+var startPassport = require('./setup-passport.js')
 var passport = require("passport");
 var flash = require("connect-flash");
 var app = express();
@@ -14,6 +14,7 @@ var connection = mysql.createConnection({
   password : 'Dahc',
   database : 'test1'
 });
+
 
 startPassport();
 
@@ -60,20 +61,7 @@ function ensureAuthenticated(req, res, next) {
 app.use(express.static('public'));
 
 app.get("/", function(req, res) {
-
-  connection.query("SELECT first_name from guy WHERE first_name= 'chad'", function(err, rows, fields) {
-
-  if (!err) {
-
-    var output = rows;
-    res.render("index", { guys: output })
-  }
-  else {
-    console.log(err);
-  }
-
-  });
-
+    res.render("index");
 });
 
 app.get("/signup", function(req, res) {
@@ -84,16 +72,10 @@ app.get("/login", function(req, res) {
   res.render("login");
 });
 
-app.post("/signup", function(req, res) {
-
-  console.log(req.body, "/signup");
-
-  passport.authenticate("local-signup", {
+app.post("/signup", passport.authenticate("local-signup", {
   successRedirect: "/login",
   failureRedirect: "/"
-  });
-
-});
+}));
 
 app.listen(5000, function() {
   console.log('listening on port 5000.');
